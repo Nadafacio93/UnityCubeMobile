@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,12 +8,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed = 5f;
     [SerializeField] private float maxSpeed = 5f;
     public ParticleSystem destructionParticle;
+    private CinemachineImpulseSource _impulseSource;
 
     private Vector2 movementInput;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void OnMove(InputValue value)
@@ -34,6 +37,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Obstacle"))
         {
             Instantiate(destructionParticle, transform.position, Quaternion.identity);
+            _impulseSource.GenerateImpulse();
             Destroy(gameObject);
         }
 
