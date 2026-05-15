@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+    
     [Header ("Spawnar Objetos")]
     [SerializeField] private GameObject obstaclePrefab;
     public float spawnInterval = 2f;
@@ -39,6 +41,7 @@ public class GameManager : MonoBehaviour
 
     private void OnCancel(InputAction.CallbackContext context)
     {
+        if (isGameOver) { return; }
         if (Time.timeScale == 0f)
         {
             StartCoroutine(ScaleTime(0f, 1f, 0.5f));
@@ -51,6 +54,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
         StartCoroutine(SpawnObstacle());
@@ -58,6 +74,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (isGameOver) { return; }
         Pontuacao();
     }
 
