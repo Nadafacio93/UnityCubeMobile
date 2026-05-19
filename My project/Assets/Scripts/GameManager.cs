@@ -24,6 +24,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreText;
     private int score = 0;
     private float timeScore = 0f;
+    private int highScore;
+    public int HighScore => highScore;
+
+    [Header("Game Over")]
+    [SerializeField] private GameObject gameOverScreen;
 
     private void OnEnable()
     {
@@ -59,7 +64,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -142,4 +147,23 @@ public class GameManager : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    public void GameOver()
+    {
+        isGameOver = true;
+        gameOverScreen.SetActive(true);
+    }
+
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+    }
 }
