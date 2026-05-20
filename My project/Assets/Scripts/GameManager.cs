@@ -24,8 +24,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreText;
     private int score = 0;
     private float timeScore = 0f;
+    [SerializeField] private TextMeshProUGUI highScoreText;
     private int highScore;
-    public int HighScore => highScore;
 
     [Header("Game Over")]
     [SerializeField] private GameObject gameOverScreen;
@@ -75,6 +75,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(SpawnObstacle());
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+        highScoreText.text = $"Recorde: {highScore}";
     }
 
     void Update()
@@ -88,7 +90,7 @@ public class GameManager : MonoBehaviour
         while (!isGameOver)
         {
 
-            var obstacleSpawn = Random.Range(1, 4);
+            var obstacleSpawn = Random.Range(2, 5);
             for (int i = 0; i < obstacleSpawn; i++)//Cria laço para spawnar mais de um obstáculo por vez
             {
 
@@ -134,11 +136,23 @@ public class GameManager : MonoBehaviour
     private void Pontuacao()
     {
         timeScore += Time.deltaTime;
-        if (timeScore >= 1)
+        while (timeScore >= 1f)
         {
             score++;
-            scoreText.text = "Pontos:" + score;
-            timeScore = 0f;
+            timeScore -= 1f;
+
+            scoreText.text = $"Pontos:{score}";
+
+            if (score > highScore)
+            {
+                highScore = score;
+
+                highScoreText.text = $"Recorde:{highScore}";
+
+                PlayerPrefs.SetInt("HighScore", highScore);
+
+                PlayerPrefs.Save();
+            }
         }
     }
 
